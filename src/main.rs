@@ -18,6 +18,7 @@ fn create_image() -> std::io::Result<()> {
     file.write_fmt(format_args!("{}\n", COLOR_RANGE))?;
 
     for j in (0..IMAGE_HEIGHT).rev() {
+        eprintln!("\rScanlines remaining:{}", j);
         for i in 0..IMAGE_WIDTH {
             let r = i as f32 / IMAGE_WIDTH as f32;
             let g = j as f32 / IMAGE_HEIGHT as f32;
@@ -28,10 +29,10 @@ fn create_image() -> std::io::Result<()> {
             let ig = (g * IMAGE_HEIGHT as f32) as u16;
             let ib = (b * COLOR_RANGE as f32) as u16;
 
-            file.write_fmt(format_args!("{} {} {} ", ir, ig, ib))?;
+            file.write_fmt(format_args!("{} {} {}\n", ir, ig, ib))?;
         }
-        file.write(b"\n")?;
     }
+    eprintln!("\rDone");
 
 
     Ok(())
