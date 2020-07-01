@@ -29,7 +29,7 @@ fn create_image() -> std::io::Result<()> {
     let lower_left_corner: Point3 = origin - horizonal/viewport_width - vertical/viewport_height - Point3::new(0f32, 0f32, focal_length);
 
     for j in (0..IMAGE_HEIGHT).rev() {
-        eprintln!("\rScanlines remaining:{}", j);
+        // eprintln!("\rScanlines remaining:{}", j);
         for i in 0..IMAGE_WIDTH {
             let u = i as f32 / (IMAGE_WIDTH - 1) as f32;
             let v = j as f32 / (IMAGE_HEIGHT - 1) as f32;

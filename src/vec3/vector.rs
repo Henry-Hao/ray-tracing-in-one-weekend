@@ -2,12 +2,10 @@ use super::*;
 use std::ops::{Add, Sub, Div, Mul};
 
 impl Point3 {
-    pub fn dot(&self, rhs: &Self) -> Self {
-        Self {
-            x: self.x * rhs.x,
-            y: self.y * rhs.y,
-            z: self.z * rhs.z
-        }
+    pub fn dot(&self, rhs: &Self) -> f32{
+        self.x * rhs.x +
+        self.y * rhs.y +
+        self.z * rhs.z
     }
 
     pub fn cross(&self, rhs: &Self) -> Self {
@@ -149,7 +147,7 @@ mod tests {
         let (x2, y2, z2) = (6f32, 7f32, 8f32);
         let v1: Point3 = Point3::new(x1, y1, z1);
         let v2: Point3 = Point3::new(x2, y2, z2);
-        assert_eq!(v1.dot(&v2), Point3::new(x1*x2, y1*y2, z1*z2));
+        assert_eq!(v1.dot(&v2), 86f32);
     }
 
     #[test]
