@@ -1,10 +1,10 @@
-use std::ops::{AddAssign,DivAssign, Index,MulAssign, Neg};
+use std::ops::{AddAssign, SubAssign, DivAssign, Index, MulAssign, Neg};
 
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Vec3 {
-    pub x: f32,
-    pub y: f32,
-    pub z: f32,
+    x: f32,
+    y: f32,
+    z: f32,
 }
 
 pub type Point3 = Vec3;
@@ -23,6 +23,18 @@ impl Vec3 {
 
     pub fn length(&self) -> f32 {
         self.length_squared().sqrt()
+    }
+
+    pub fn x(&self) -> f32 {
+        self.x
+    }
+
+    pub fn y(&self) -> f32 {
+        self.y
+    }
+
+    pub fn z(&self) -> f32 {
+        self.z
     }
 }
 
@@ -55,6 +67,17 @@ impl AddAssign for Vec3 {
             x: self.x + rhs.x,
             y: self.y + rhs.y,
             z: self.z + rhs.z,
+        }
+    }
+}
+
+
+impl SubAssign for Vec3 {
+    fn sub_assign(&mut self, rhs: Self) {
+        *self = Self {
+            x: self.x - rhs.x,
+            y: self.y - rhs.y,
+            z: self.z - rhs.z,
         }
     }
 }
@@ -103,6 +126,7 @@ impl DivAssign<f32> for Vec3 {
 
 pub mod color;
 pub mod vector;
+pub mod ray;
 
 
 
@@ -146,6 +170,20 @@ mod tests {
         assert_eq!(v3.y, v1.y);
         assert_eq!(v3.z, v1.z);
     }
+
+    #[test]
+    fn test_sub_assign() {
+        let (x1, y1, z1) = (1f32, 2f32, 3f32);
+        let (x2, y2, z2) = (4f32, 5f32, 6f32);
+        let mut v1: Vec3 = Vec3::new(x1, y1, z1);
+        let v2: Vec3 = Vec3::new(x2, y2, z2);
+        let v3: Vec3 = Vec3::new(x1 - x2, y1 - y2, z1 - z2);
+        v1 -= v2;
+        assert_eq!(v3.x, v1.x);
+        assert_eq!(v3.y, v1.y);
+        assert_eq!(v3.z, v1.z);
+    }
+
 
     #[test]
     fn test_mul_assign() {

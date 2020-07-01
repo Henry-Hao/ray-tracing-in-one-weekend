@@ -1,5 +1,5 @@
 use super::*;
-use std::ops::{Add, Div, Mul};
+use std::ops::{Add, Sub, Div, Mul};
 
 impl Point3 {
     pub fn dot(&self, rhs: &Self) -> Self {
@@ -31,6 +31,17 @@ impl Add for Point3 {
             x: self.x + rhs.x,
             y: self.y + rhs.y,
             z: self.z + rhs.z,
+        }
+    }
+}
+
+impl Sub for Point3 {
+    type Output = Self;
+    fn sub(self, rhs: Self) -> Self::Output {
+        Self {
+            x: self.x - rhs.x,
+            y: self.y - rhs.y,
+            z: self.z - rhs.z,
         }
     }
 }
@@ -91,6 +102,18 @@ mod tests {
         assert_eq!(v3.x, x1 + x2);
         assert_eq!(v3.y, y1 + y2);
         assert_eq!(v3.z, z1 + z2);
+    }
+
+    #[test]
+    fn test_sub() {
+        let (x1, y1, z1) = (1f32, 2f32, 3f32);
+        let (x2, y2, z2) = (4f32, 5f32, 6f32);
+        let v1: Point3 = Point3 ::new(x1, y1, z1);
+        let v2: Point3 = Point3 ::new(x2, y2, z2);
+        let v3: Point3 = v1 - v2;
+        assert_eq!(v3.x, x1 - x2);
+        assert_eq!(v3.y, y1 - y2);
+        assert_eq!(v3.z, z1 - z2);
     }
 
     #[test]
