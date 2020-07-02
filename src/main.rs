@@ -2,10 +2,12 @@ mod vec3;
 mod ray;
 mod object;
 mod rtweekend;
+mod camera;
 
 use vec3::*;
-use ray::*;
 use object::*;
+use camera::*;
+use rtweekend::*;
 
 use std::fs::File;
 use std::io::prelude::*;
@@ -13,8 +15,9 @@ use std::io::prelude::*;
 use std::rc::Rc;
 
 const ASPECT_RATIO: f32 = 16.0 / 9.0;
-const IMAGE_WIDTH: u16 = 1024;
+const IMAGE_WIDTH: u16 = 384;
 const IMAGE_HEIGHT: u16 = (IMAGE_WIDTH as f32 / ASPECT_RATIO) as u16;
+const SAMPLES_PER_PIXEL: u16 = 100;
 
 fn main() -> std::io::Result<()> {
     create_image()
@@ -26,28 +29,22 @@ fn create_image() -> std::io::Result<()> {
     let mut file = File::create("image.ppm")?;
 
     file.write_fmt(format_args!("P3\n{} {}\n{}\n",IMAGE_WIDTH, IMAGE_HEIGHT, color::COLOR_RANGE))?;
-    let viewport_height: f32 = 2.0;
-    let viewport_width: f32= ASPECT_RATIO  * viewport_height;
-    let focal_length: f32 = 1.0;
-
-    let origin: Point3 = Point3::new(0f32, 0f32, 0f32);
-    let horizonal: Point3 = Point3::new(viewport_width, 0f32, 0f32);
-    let vertical: Point3 = Point3::new(0f32, viewport_height, 0f32);
-    let lower_left_corner: Point3 = origin - horizonal/2.0 - vertical/2.0 - Point3::new(0f32, 0f32, focal_length);
-
 
     let mut world: HittableList = HittableList ::new();
     world.add(Rc::new(Sphere::new(Point3::new(0.0, 0.0, -1.0), 0.5)));
     world.add(Rc::new(Sphere::new(Point3::new(0.0, -100.5, -1.0), 100.0)));
 
+    let cam: Camera = Camera::new();
+
     for j in (0..IMAGE_HEIGHT).rev() {
-        // eprintln!("\rScanlines remaining:{}", j);
+        eprintln!("\rScanlines remaining:{}", j);
         for i in 0..IMAGE_WIDTH {
-            let u = i as f32 / (IMAGE_WIDTH - 1) as f32;
-            let v = j as f32 / (IMAGE_HEIGHT - 1) as f32;
-            let ray: Ray = Ray::new(origin, lower_left_corner + u*horizonal + v*vertical - origin);
-            let color: Color = ray.ray_color(&world);
-            color.write_to_file(&mut file)?;
+            let color = (0..SAMPLES_PER_PIXEL).fold(Color::new(0.0, 0.0, 0.0), |acc, _| {
+                let u = (i as f32 + random_double(0.0, 1.0)) / (IMAGE_WIDTH - 1) as f32;
+                let v = (j as f32 + random_double(0.0, 1.0)) / (IMAGE_HEIGHT - 1) as f32;
+                acc + cam.get_ray(u, v).ray_color(&world)
+            });
+            color.write_to_file(&mut file, SAMPLES_PER_PIXEL)?;
         }
     }
     eprintln!("\rDone");
