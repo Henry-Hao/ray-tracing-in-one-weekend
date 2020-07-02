@@ -126,7 +126,6 @@ impl DivAssign<f32> for Vec3 {
 
 pub mod color;
 pub mod vector;
-pub mod ray;
 
 
 

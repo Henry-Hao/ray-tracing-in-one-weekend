@@ -1,12 +1,19 @@
 mod vec3;
+mod ray;
+mod object;
+mod rtweekend;
+
 use vec3::*;
-use vec3::ray::*;
+use ray::*;
+use object::*;
 
 use std::fs::File;
 use std::io::prelude::*;
 
+use std::rc::Rc;
+
 const ASPECT_RATIO: f32 = 16.0 / 9.0;
-const IMAGE_WIDTH: u16 = 384;
+const IMAGE_WIDTH: u16 = 1024;
 const IMAGE_HEIGHT: u16 = (IMAGE_WIDTH as f32 / ASPECT_RATIO) as u16;
 
 fn main() -> std::io::Result<()> {
@@ -26,7 +33,12 @@ fn create_image() -> std::io::Result<()> {
     let origin: Point3 = Point3::new(0f32, 0f32, 0f32);
     let horizonal: Point3 = Point3::new(viewport_width, 0f32, 0f32);
     let vertical: Point3 = Point3::new(0f32, viewport_height, 0f32);
-    let lower_left_corner: Point3 = origin - horizonal/viewport_width - vertical/viewport_height - Point3::new(0f32, 0f32, focal_length);
+    let lower_left_corner: Point3 = origin - horizonal/2.0 - vertical/2.0 - Point3::new(0f32, 0f32, focal_length);
+
+
+    let mut world: HittableList = HittableList ::new();
+    world.add(Rc::new(Sphere::new(Point3::new(0.0, 0.0, -1.0), 0.5)));
+    world.add(Rc::new(Sphere::new(Point3::new(0.0, -100.5, -1.0), 100.0)));
 
     for j in (0..IMAGE_HEIGHT).rev() {
         // eprintln!("\rScanlines remaining:{}", j);
@@ -34,7 +46,7 @@ fn create_image() -> std::io::Result<()> {
             let u = i as f32 / (IMAGE_WIDTH - 1) as f32;
             let v = j as f32 / (IMAGE_HEIGHT - 1) as f32;
             let ray: Ray = Ray::new(origin, lower_left_corner + u*horizonal + v*vertical - origin);
-            let color: Color = ray.gradient_color();
+            let color: Color = ray.ray_color(&world);
             color.write_to_file(&mut file)?;
         }
     }
