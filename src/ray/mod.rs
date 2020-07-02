@@ -29,10 +29,16 @@ impl Ray {
         self.origin + t * self.direction
     }
 
-    pub fn ray_color<T: Hittable>(&self, world: &T) -> Color {
+    pub fn ray_color<T: Hittable>(&self, world: &T, depth: u16) -> Color {
+        if depth <= 0 {
+            return Color::new(0.0, 0.0, 0.0);
+        }
         let mut rec:HitRecord = HitRecord::default();
-        if world.hit(self, 0.0, INFINITY, &mut rec) {
-            return 0.5 * (rec.normal + Color::new(1.0,1.0,1.0));
+        if world.hit(self, 0.001, INFINITY, &mut rec) {
+            // let target: Point3 = rec.p + rec.normal + Vec3::random_unit_vector();
+            let target: Point3 = rec.p + Color::random_in_hemisphere(&rec.normal);
+            let ray: Ray = Ray::new(rec.p, target - rec.p);
+            return 0.5 * (ray.ray_color(world, depth-1));
         }
 
         let unit_direction: Vec3 = self.direction().unit_vector();

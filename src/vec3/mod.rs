@@ -1,4 +1,5 @@
 use std::ops::{AddAssign, SubAssign, DivAssign, Index, MulAssign, Neg};
+use super::rtweekend::*;
 
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Vec3 {
@@ -36,6 +37,44 @@ impl Vec3 {
     pub fn z(&self) -> f32 {
         self.z
     }
+
+    pub fn random_with_range(min:f32, max: f32) -> Vec3 {
+        Vec3::new(
+            random_double_with_range(min, max),
+            random_double_with_range(min, max),
+            random_double_with_range(min, max)
+            )
+    }
+
+    pub fn random() -> Vec3 {
+        Vec3::random_with_range(0.0, 1.0)
+    }
+
+    pub fn random_in_unit_sphere() -> Vec3 {
+        loop {
+            let p: Vec3 = Vec3::random();
+            if p.length_squared() <= 1.0 {
+                return p;
+            }
+        }
+    }
+
+    pub fn random_unit_vector() -> Vec3 {
+        let a = random_double_with_range(0.0, 2.0*PI);
+        let z = random_double_with_range(-1.0, 1.0);
+        let r = (1.0 - z*z).sqrt();
+        Vec3::new(r*a.cos(), r*a.sin(), z)
+    }
+
+    pub fn random_in_hemisphere(normal: &Vec3) -> Vec3 {
+        let in_unit_sphere = Color::random_in_unit_sphere();
+        if in_unit_sphere.dot(normal) > 0.0 {
+            in_unit_sphere
+        } else {
+            -in_unit_sphere
+        }
+    }
+
 }
 
 impl Neg for Vec3 {
