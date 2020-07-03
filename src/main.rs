@@ -1,18 +1,21 @@
-mod vec3;
-mod ray;
-mod object;
-mod rtweekend;
 mod camera;
+mod material;
+mod object;
+mod ray;
+mod rtweekend;
+mod vec3;
 
-use vec3::*;
-use object::*;
 use camera::*;
+use material::*;
+use object::*;
 use rtweekend::*;
+use vec3::*;
 
 use std::fs::File;
 use std::io::prelude::*;
 
 use std::rc::Rc;
+use std::cell::RefCell;
 
 use indicatif::ProgressBar;
 
@@ -26,16 +29,37 @@ fn main() -> std::io::Result<()> {
     create_image()
 }
 
-
 fn create_image() -> std::io::Result<()> {
-
     let mut file = File::create("image.ppm")?;
 
-    file.write_fmt(format_args!("P3\n{} {}\n{}\n",IMAGE_WIDTH, IMAGE_HEIGHT, color::COLOR_RANGE))?;
+    file.write_fmt(format_args!(
+        "P3\n{} {}\n{}\n",
+        IMAGE_WIDTH,
+        IMAGE_HEIGHT,
+        color::COLOR_RANGE
+    ))?;
 
-    let mut world: HittableList = HittableList ::new();
-    world.add(Rc::new(Sphere::new(Point3::new(0.0, 0.0, -1.0), 0.5)));
-    world.add(Rc::new(Sphere::new(Point3::new(0.0, -100.5, -1.0), 100.0)));
+    let mut world: HittableList = HittableList::new();
+    world.add(Rc::new(Sphere::new(
+        Point3::new(0.0, 0.0, -1.0),
+        0.5,
+        Rc::new(RefCell::new(Lambertian::new(Color::new(0.7, 0.3, 0.3)))),
+    )));
+    world.add(Rc::new(Sphere::new(
+        Point3::new(0.0, -100.5, -1.0),
+        100.0,
+        Rc::new(RefCell::new(Lambertian::new(Color::new(0.8, 0.8, 0.0)))),
+    )));
+    world.add(Rc::new(Sphere::new(
+        Point3::new(1.0, 0.0, -1.0),
+        0.5,
+        Rc::new(RefCell::new(Metal::new(Color::new(0.8, 0.6, 0.2)))),
+    )));
+    world.add(Rc::new(Sphere::new(
+        Point3::new(-1.0, 0.0, -1.0),
+        0.5,
+        Rc::new(RefCell::new(Metal::new(Color::new(0.8, 0.8, 0.8)))),
+    )));
 
     let cam: Camera = Camera::new();
 
@@ -53,7 +77,5 @@ fn create_image() -> std::io::Result<()> {
     }
     pb.finish_with_message("Done");
 
-
     Ok(())
-
 }

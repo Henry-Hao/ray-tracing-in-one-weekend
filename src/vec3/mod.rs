@@ -1,7 +1,7 @@
-use std::ops::{AddAssign, SubAssign, DivAssign, Index, MulAssign, Neg};
 use super::rtweekend::*;
+use std::ops::{AddAssign, DivAssign, Index, MulAssign, Neg, SubAssign};
 
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq, Default)]
 pub struct Vec3 {
     x: f32,
     y: f32,
@@ -9,17 +9,15 @@ pub struct Vec3 {
 }
 
 pub type Point3 = Vec3;
-pub type Color= Vec3;
+pub type Color = Vec3;
 
 impl Vec3 {
     pub fn new(x: f32, y: f32, z: f32) -> Self {
         Self { x, y, z }
     }
 
-    pub fn length_squared(&self) ->f32{
-        self.x * self.x + 
-        self.y * self.y +
-        self.z * self.z
+    pub fn length_squared(&self) -> f32 {
+        self.x * self.x + self.y * self.y + self.z * self.z
     }
 
     pub fn length(&self) -> f32 {
@@ -38,12 +36,12 @@ impl Vec3 {
         self.z
     }
 
-    pub fn random_with_range(min:f32, max: f32) -> Vec3 {
+    pub fn random_with_range(min: f32, max: f32) -> Vec3 {
         Vec3::new(
             random_double_with_range(min, max),
             random_double_with_range(min, max),
-            random_double_with_range(min, max)
-            )
+            random_double_with_range(min, max),
+        )
     }
 
     pub fn random() -> Vec3 {
@@ -60,10 +58,10 @@ impl Vec3 {
     }
 
     pub fn random_unit_vector() -> Vec3 {
-        let a = random_double_with_range(0.0, 2.0*PI);
+        let a = random_double_with_range(0.0, 2.0 * PI);
         let z = random_double_with_range(-1.0, 1.0);
-        let r = (1.0 - z*z).sqrt();
-        Vec3::new(r*a.cos(), r*a.sin(), z)
+        let r = (1.0 - z * z).sqrt();
+        Vec3::new(r * a.cos(), r * a.sin(), z)
     }
 
     pub fn random_in_hemisphere(normal: &Vec3) -> Vec3 {
@@ -75,6 +73,9 @@ impl Vec3 {
         }
     }
 
+    pub fn reflect(&self, n: &Vec3) -> Vec3 {
+        *self - 2.0 * self.dot(&n) * *n
+    }
 }
 
 impl Neg for Vec3 {
@@ -110,7 +111,6 @@ impl AddAssign for Vec3 {
     }
 }
 
-
 impl SubAssign for Vec3 {
     fn sub_assign(&mut self, rhs: Self) {
         *self = Self {
@@ -120,7 +120,6 @@ impl SubAssign for Vec3 {
         }
     }
 }
-
 
 impl MulAssign for Vec3 {
     fn mul_assign(&mut self, rhs: Self) {
@@ -133,7 +132,7 @@ impl MulAssign for Vec3 {
 }
 
 impl MulAssign<f32> for Vec3 {
-    fn mul_assign(&mut self, rhs:f32) {
+    fn mul_assign(&mut self, rhs: f32) {
         *self = Self {
             x: self.x * rhs,
             y: self.y * rhs,
@@ -162,12 +161,8 @@ impl DivAssign<f32> for Vec3 {
     }
 }
 
-
 pub mod color;
 pub mod vector;
-
-
-
 
 /**************************
  *   Unit Test
@@ -222,7 +217,6 @@ mod tests {
         assert_eq!(v3.z, v1.z);
     }
 
-
     #[test]
     fn test_mul_assign() {
         let (x1, y1, z1) = (1f32, 2f32, 3f32);
@@ -235,9 +229,9 @@ mod tests {
         assert_eq!(v3.y, v1.y);
         assert_eq!(v3.z, v1.z);
         v1 *= 10f32;
-        assert_eq!(v3.x*10f32, v1.x);
-        assert_eq!(v3.y*10f32, v1.y);
-        assert_eq!(v3.z*10f32, v1.z);
+        assert_eq!(v3.x * 10f32, v1.x);
+        assert_eq!(v3.y * 10f32, v1.y);
+        assert_eq!(v3.z * 10f32, v1.z);
     }
 
     #[test]
@@ -259,7 +253,6 @@ mod tests {
         let v1: Point3 = Point3::new(x1, y1, z1);
         // assert_eq!(v1.length_squared(), (3*3+4*4+6*6) as f32);
         assert_eq!(v1.length_squared(), 61f32);
-
     }
 
     #[test]
@@ -267,6 +260,5 @@ mod tests {
         let (x1, y1, z1) = (3f32, 4f32, 5f32);
         let v1: Point3 = Point3::new(x1, y1, z1);
         assert_eq!(v1.length(), 7.071068f32);
-
     }
 }

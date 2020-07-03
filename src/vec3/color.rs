@@ -1,7 +1,6 @@
 use super::*;
 use std::fs::File;
 use std::io::prelude::*;
-use crate::rtweekend::*;
 
 pub const COLOR_RANGE: u16 = 256;
 
@@ -12,13 +11,12 @@ impl Color {
         let g = (self.y() * scale).sqrt();
         let b = (self.z() * scale).sqrt();
 
-
-        file.write_fmt(format_args!("{} {} {}\n", 
-                                    (COLOR_RANGE as f32 * clamp(r, 0.0, 1.0)) as u16,
-                                    (COLOR_RANGE as f32 * clamp(g, 0.0, 1.0)) as u16,
-                                    (COLOR_RANGE as f32 * clamp(b, 0.0, 1.0)) as u16)
-                       )?;
+        file.write_fmt(format_args!(
+            "{} {} {}\n",
+            (COLOR_RANGE as f32 * clamp(r, 0.0, 1.0)) as u16,
+            (COLOR_RANGE as f32 * clamp(g, 0.0, 1.0)) as u16,
+            (COLOR_RANGE as f32 * clamp(b, 0.0, 1.0)) as u16
+        ))?;
         Ok(())
     }
 }
-

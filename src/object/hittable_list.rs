@@ -1,17 +1,14 @@
 use super::*;
-use super::hittable::Hittable;
 use std::rc::Rc;
 
-pub struct HittableList{
-    objects: Vec<Rc<dyn Hittable>>
+pub struct HittableList {
+    objects: Vec<Rc<dyn Hittable>>,
 }
 
 impl HittableList {
     pub fn new() -> Self {
         let v: Vec<Rc<dyn Hittable>> = Vec::new();
-        Self {
-            objects: v
-        }
+        Self { objects: v }
     }
 
     pub fn clear(&mut self) {
@@ -32,8 +29,8 @@ impl Hittable for HittableList {
         for object in self.objects.iter() {
             if object.hit(r, t_min, closest_so_far, &mut temp_rec) {
                 hit_anything = true;
-                closest_so_far = temp_rec.t;
-                rec.clone_from(&temp_rec);
+                closest_so_far = temp_rec.clone().t;
+                *rec = temp_rec.clone();
             }
         }
 
