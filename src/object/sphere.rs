@@ -1,15 +1,15 @@
 use super::*;
-use std::rc::Rc;
 use std::cell::RefCell;
+use std::rc::Rc;
 
 pub struct Sphere {
     center: Point3,
     radius: f32,
-    mat_ptr:Rc<RefCell<dyn Material>>
+    mat_ptr: Rc<RefCell<dyn Material>>,
 }
 
 impl Sphere {
-    pub fn new(center: Point3, radius: f32, mat_ptr:Rc<RefCell<dyn Material>>) -> Self {
+    pub fn new(center: Point3, radius: f32, mat_ptr: Rc<RefCell<dyn Material>>) -> Self {
         Self {
             center,
             radius,

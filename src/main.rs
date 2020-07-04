@@ -14,8 +14,8 @@ use vec3::*;
 use std::fs::File;
 use std::io::prelude::*;
 
-use std::rc::Rc;
 use std::cell::RefCell;
+use std::rc::Rc;
 
 use indicatif::ProgressBar;
 
@@ -43,7 +43,7 @@ fn create_image() -> std::io::Result<()> {
     world.add(Rc::new(Sphere::new(
         Point3::new(0.0, 0.0, -1.0),
         0.5,
-        Rc::new(RefCell::new(Lambertian::new(Color::new(0.7, 0.3, 0.3)))),
+        Rc::new(RefCell::new(Lambertian::new(Color::new(0.1, 0.2, 0.5)))),
     )));
     world.add(Rc::new(Sphere::new(
         Point3::new(0.0, -100.5, -1.0),
@@ -58,11 +58,21 @@ fn create_image() -> std::io::Result<()> {
     world.add(Rc::new(Sphere::new(
         Point3::new(-1.0, 0.0, -1.0),
         0.5,
-        Rc::new(RefCell::new(Metal::new(Color::new(0.8, 0.8, 0.8), 1.0))),
+        Rc::new(RefCell::new(Dielectric::new(1.5))),
+    )));
+    world.add(Rc::new(Sphere::new(
+        Point3::new(-1.0, 0.0, -1.0),
+        -0.45,
+        Rc::new(RefCell::new(Dielectric::new(1.5))),
     )));
 
-    let cam: Camera = Camera::new();
-
+    let cam: Camera = Camera::new(
+        Point3::new(-2.0, 2.0, 1.0),
+        Point3::new(0.0, 0.0, -1.0),
+        Vec3::new(0.0, 1.0, 0.0),
+        20.0,
+        ASPECT_RATIO
+        );
     let pb: ProgressBar = ProgressBar::new(IMAGE_HEIGHT as u64);
     for j in (0..IMAGE_HEIGHT).rev() {
         pb.inc(1);

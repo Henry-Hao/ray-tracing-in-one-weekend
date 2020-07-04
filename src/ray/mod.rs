@@ -34,10 +34,10 @@ impl Ray {
         if world.hit(self, 0.001, INFINITY, &mut rec) {
             let mut scattered: Ray = Ray::default();
             let mut attenuation: Color = Color::default();
-                if rec
-                    .mat_ptr
-                    .borrow_mut()
-                    .scatter(self, &rec, &mut attenuation, &mut scattered)
+            if rec
+                .mat_ptr
+                .borrow_mut()
+                .scatter(self, &rec, &mut attenuation, &mut scattered)
             {
                 return attenuation * scattered.ray_color(world, depth - 1);
             }

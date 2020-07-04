@@ -1,8 +1,8 @@
 use crate::material::*;
 use crate::ray::*;
 use crate::vec3::*;
-use std::rc::Rc;
 use std::cell::RefCell;
+use std::rc::Rc;
 
 #[derive(Clone)]
 pub struct HitRecord {
@@ -11,7 +11,7 @@ pub struct HitRecord {
     pub t: f32,
     pub front_face: bool,
     // pub mat_ptr: Option<Rc<dyn Material>>,
-    pub mat_ptr: Rc<RefCell<dyn Material>>
+    pub mat_ptr: Rc<RefCell<dyn Material>>,
 }
 
 impl HitRecord {
@@ -21,7 +21,7 @@ impl HitRecord {
             normal: Vec3::new(0.0, 0.0, 0.0),
             t: 0.0,
             front_face: false,
-            mat_ptr: Rc::new(RefCell::new(MaterialMock))
+            mat_ptr: Rc::new(RefCell::new(MaterialMock)),
         }
     }
 

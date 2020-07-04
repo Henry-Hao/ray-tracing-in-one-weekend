@@ -73,8 +73,15 @@ impl Vec3 {
         }
     }
 
-    pub fn reflect(&self, n: &Vec3) -> Vec3 {
-        *self - 2.0 * self.dot(&n) * *n
+    pub fn reflect(u: &Vec3, n: &Vec3) -> Vec3 {
+        *u - 2.0 * u.dot(&n) * *n
+    }
+
+    pub fn refract(uv: &Vec3, n: &Vec3, etai_over_etat: f32) -> Vec3 {
+        let cos_theta = n.dot(&(-(*uv)));
+        let r_out_parallel: Vec3 = etai_over_etat * (*uv + cos_theta * *n);
+        let r_out_perp: Vec3 = -(1.0 - r_out_parallel.length_squared()).sqrt() * *n;
+        r_out_parallel + r_out_perp
     }
 }
 

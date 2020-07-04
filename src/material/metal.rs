@@ -2,7 +2,7 @@ use super::*;
 
 pub struct Metal {
     albedo: Color,
-    fuzz: f32
+    fuzz: f32,
 }
 
 impl Metal {
@@ -11,8 +11,8 @@ impl Metal {
             albedo: a,
             fuzz: match f < 1.0 {
                 true => f,
-                false => 1.0
-            }
+                false => 1.0,
+            },
         }
     }
 }
