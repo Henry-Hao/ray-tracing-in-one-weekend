@@ -53,12 +53,12 @@ fn create_image() -> std::io::Result<()> {
     world.add(Rc::new(Sphere::new(
         Point3::new(1.0, 0.0, -1.0),
         0.5,
-        Rc::new(RefCell::new(Metal::new(Color::new(0.8, 0.6, 0.2)))),
+        Rc::new(RefCell::new(Metal::new(Color::new(0.8, 0.6, 0.2), 0.3))),
     )));
     world.add(Rc::new(Sphere::new(
         Point3::new(-1.0, 0.0, -1.0),
         0.5,
-        Rc::new(RefCell::new(Metal::new(Color::new(0.8, 0.8, 0.8)))),
+        Rc::new(RefCell::new(Metal::new(Color::new(0.8, 0.8, 0.8), 1.0))),
     )));
 
     let cam: Camera = Camera::new();
